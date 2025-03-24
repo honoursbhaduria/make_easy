@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Blog Generater</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+       
+
+.loader {
+    --path: #155DFC;
+    --dot: #000000;
+    --duration: 3s;
+    width: 44px;
+    height: 44px;
+    position: relative;
+  }
+  .loader:before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    position: absolute;
+    display: block;
+    background: var(--dot);
+    top: 37px;
+    left: 19px;
+    transform: translate(-18px, -18px);
+    -webkit-animation: dotRect var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+            animation: dotRect var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+  }
+  .loader svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .loader svg rect,
+  .loader svg polygon,
+  .loader svg circle {
+    fill: none;
+    stroke: var(--path);
+    stroke-width: 10px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .loader svg polygon {
+    stroke-dasharray: 145 76 145 76;
+    stroke-dashoffset: 0;
+    -webkit-animation: pathTriangle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+            animation: pathTriangle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+  }
+  .loader svg rect {
+    stroke-dasharray: 192 64 192 64;
+    stroke-dashoffset: 0;
+    -webkit-animation: pathRect 3s cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+            animation: pathRect 3s cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+  }
+  .loader svg circle {
+    stroke-dasharray: 150 50 150 50;
+    stroke-dashoffset: 75;
+    -webkit-animation: pathCircle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+            animation: pathCircle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+  }
+  .loader.triangle {
+    width: 48px;
+  }
+  .loader.triangle:before {
+    left: 21px;
+    transform: translate(-10px, -18px);
+    -webkit-animation: dotTriangle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+            animation: dotTriangle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+  }
+  
+  @-webkit-keyframes pathTriangle {
+    33% {
+      stroke-dashoffset: 74;
+    }
+    66% {
+      stroke-dashoffset: 147;
+    }
+    100% {
+      stroke-dashoffset: 221;
+    }
+  }
+  
+  @keyframes pathTriangle {
+    33% {
+      stroke-dashoffset: 74;
+    }
+    66% {
+      stroke-dashoffset: 147;
+    }
+    100% {
+      stroke-dashoffset: 221;
+    }
+  }
+  @-webkit-keyframes dotTriangle {
+    33% {
+      transform: translate(0, 0);
+    }
+    66% {
+      transform: translate(10px, -18px);
+    }
+    100% {
+      transform: translate(-10px, -18px);
+    }
+  }
+  @keyframes dotTriangle {
+    33% {
+      transform: translate(0, 0);
+    }
+    66% {
+      transform: translate(10px, -18px);
+    }
+    100% {
+      transform: translate(-10px, -18px);
+    }
+  }
+  @-webkit-keyframes pathRect {
+    25% {
+      stroke-dashoffset: 64;
+    }
+    50% {
+      stroke-dashoffset: 128;
+    }
+    75% {
+      stroke-dashoffset: 192;
+    }
+    100% {
+      stroke-dashoffset: 256;
+    }
+  }
+  @keyframes pathRect {
+    25% {
+      stroke-dashoffset: 64;
+    }
+    50% {
+      stroke-dashoffset: 128;
+    }
+    75% {
+      stroke-dashoffset: 192;
+    }
+    100% {
+      stroke-dashoffset: 256;
+    }
+  }
+  @-webkit-keyframes dotRect {
+    25% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(18px, -18px);
+    }
+    75% {
+      transform: translate(0, -36px);
+    }
+    100% {
+      transform: translate(-18px, -18px);
+    }
+  }
+  @keyframes dotRect {
+    25% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(18px, -18px);
+    }
+    75% {
+      transform: translate(0, -36px);
+    }
+    100% {
+      transform: translate(-18px, -18px);
+    }
+  }
+  @-webkit-keyframes pathCircle {
+    25% {
+      stroke-dashoffset: 125;
+    }
+    50% {
+      stroke-dashoffset: 175;
+    }
+    75% {
+      stroke-dashoffset: 225;
+    }
+    100% {
+      stroke-dashoffset: 275;
+    }
+  }
+  @keyframes pathCircle {
+    25% {
+      stroke-dashoffset: 125;
+    }
+    50% {
+      stroke-dashoffset: 175;
+    }
+    75% {
+      stroke-dashoffset: 225;
+    }
+    100% {
+      stroke-dashoffset: 275;
+    }
+  }
+  .loader {
+    display: inline-block;
+    margin: 0 16px;
+  }
+  
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  *:before, *:after {
+    box-sizing: border-box;
+  }
+  
+  .loader{
+    justify-content: center;
+  }
+ 
+</style>
+</head>
+<body class="flex flex-col min-h-screen bg-gray-100 font-sans antialised">
+    <!-- NAVBAR hai ye  -->
+     <nav class="bg-blue-600 p-4 text-white flex justify-between">
+        <div>
+            <h1 class="text-3xl font-bold "> AI Blog Generater</h1>
+        </div>
+        <!-- <div>
+            <a href="#" class="text-white hover:underline ">Logout</a>
+        </div> -->
+
+
+
+        <!-- naal  logout button  -->
+        <div id="logoutDiv" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors cursor-pointer shadow-md">
+             <a href="/logout">Logout</a>
+      </div>
+     </nav>
+
+     <br>
+     <br>
+     <!-- Main contebt  -->
+     <div class="flex-grow container mx-auto mt-10 px sm:px-0 ">
+        <div class="Max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md trnasition-transform transform hover:scale-101 flex flex-col">
+            <div class="text-center ">
+                <h2 class="text-2xl font -semibold mb-4 ">Welcome to the AI Blog Generater</h2>
+                <p class="text-gray-700">
+                    Our AI-powered blog generator helps you 
+                    create high-quality, SEO-optimized blog 
+                    posts in minutes. Simply enter a topic, 
+                    and our AI crafts engaging, well-structured 
+                    content to boost your online presence effortlessly.
+                    provide your youtube link below to generate your Blog..
+                </p>
+        </div>
+            <br>
+            <!-- youtube section  hai ye jisme add hota hai -->
+            <div>
+                <div>
+                    <h2 class="text-xl font-semibold">Enter Youtube link </h2>
+                    <div class="flex space-x-4 ">
+                            <input id="Youtubelink" type="url" placeholder="Paste Youtube Link..." class="flex-grow p-2 border border-blue-400 rounded-l-md">
+                            <button id="genrateBlogButton" class="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700 trnasition-colors">Generate</button>
+                    </div>
+                </div>
+                
+                <br>
+                <br>
+                <!-- section for loading section  -->
+
+                <div style="display:none;">
+                    <div class="loader" >
+                        <svg viewBox="0 0 80 80">
+                            <circle id="test" cx="40" cy="40" r="32"></circle>
+                        </svg>
+                    </div>
+                    
+                    <div class="loader triangle">
+                        <svg viewBox="0 0 86 80">
+                            <polygon points="43 8 79 72 7 72"></polygon>
+                        </svg>
+                    </div>
+                    
+                    <div class="loader">
+                        <svg viewBox="0 0 80 80">
+                            <rect x="8" y="8" width="64" height="64"></rect>
+                        </svg>
+                    </div>
+    
+                </div>
+
+
+                <!-- Geneerated Blog display section  -->
+                <section class="mt-10 flex-grow" >
+                   <h2 class="text-xl md-4 font-semibold" > Generated Blog Article</h2>
+                   <div id="blogContent" class="mt-2 text-gray-700 space-y-4">
+
+                 
+                   </div>
+                </section>
+            </div>
+        </div>
+     </div>
+
+
+
+
+     <footer class="bg-gray-800 py-6">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center px-6">
+            <p class="text-gray-400">&copy; Powered by HNO2. All rights reserved.</p>
+            <div class="flex space-x-4 mt-4 md:mt-0">
+                <a href="https://github.com/honoursbhaduria" target="_blank" class="text-gray-400 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.79 8.21 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.4-1.34-1.77-1.34-1.77-1.1-.76.08-.74.08-.74 1.22.09 1.86 1.26 1.86 1.26 1.08 1.85 2.84 1.32 3.54 1.01.11-.79.42-1.32.76-1.62-2.66-.3-5.46-1.33-5.46-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.16 0 0 1.01-.32 3.3 1.23.96-.27 1.98-.41 3-.42 1.02.01 2.04.15 3 .42 2.29-1.55 3.3-1.23 3.3-1.23.66 1.64.24 2.86.12 3.16.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.47 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.58C20.56 21.79 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        
+    </script>
+</body>
+</html>
