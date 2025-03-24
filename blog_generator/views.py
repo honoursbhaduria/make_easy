@@ -9,6 +9,18 @@ def index (request):
 
 
 def user_login(request):
+    if request.method == 'POST' :
+        username = request.POST['username']
+        createpassword =  request.POST['createpassword']
+
+        user = authenticate(request , username=username , password = createpassword)
+        if user is not None:
+            login(request, user)
+            return redirect('/')
+        else:
+            error_message = "Invalid username or password"
+            return render(request, 'login.html',{'error_message'})
+
     return render (request , 'login.html')
 
 def user_signup (request):
