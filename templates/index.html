@@ -227,16 +227,30 @@
     <!-- NAVBAR hai ye  -->
      <nav class="bg-blue-600 p-4 text-white flex justify-between">
         <div>
-            <h1 class="text-3xl font-bold "> AI Blog Generater</h1>
+            <h1 class="text-3xl font-bold ">Youtube script Generater</h1>
         </div>
         <!-- <div>
             <a href="#" class="text-white hover:underline ">Logout</a>
         </div> -->
 
 
+        <!-- Notification Alert -->
+<div id="notification" class="fixed top-[-100px] left-1/2 transform -translate-x-1/2 bg-blue-500 text-black px-6 py-4 text-lg rounded-md shadow-lg hidden transition-all duration-500 flex items-center justify-between w-96">
+  <span id="notification-message"></span>
+  <button onclick="hideNotification()" class="ml-4 text-white font-bold text-xl">&times;</button>
+</div>
+
+
 
         <!-- naal  logout button  -->
-        <div id="logoutDiv" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors cursor-pointer shadow-md">
+      <div class="flex items-center space-x-2">
+          <span class="text-white text-lg font-medium">Welcome</span>
+          <span class="bg-white text-blue-600 px-3 py-1 rounded-lg font-semibold shadow">
+              {{ user.username }}
+          </span>
+      </div>
+      
+      <div id="logoutDiv" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors cursor-pointer shadow-md">
              <a href="/logout">Logout</a>
       </div>
      </nav>
@@ -272,7 +286,7 @@
                 <br>
                 <!-- section for loading section  -->
 
-                <div style="display:none;">
+                <div style="display:none;" id="loading">
                     <div class="loader" >
                         <svg viewBox="0 0 80 80">
                             <circle id="test" cx="40" cy="40" r="32"></circle>
@@ -324,7 +338,121 @@
 
 
     <script>
-        
+        document.getElementById('genrateBlogButton').addEventListener("click",async() => {
+
+          const youtubeLink = document.getElementById('Youtubelink').value;
+          const loadingIndicater = document.getElementById('loading');
+          const blogContent = document.getElementById('blogContent');
+
+          if (youtubeLink){
+            document.getElementById('loading').style.display='block'
+            loadingIndicater.classList.remove('hidden')
+            blogContent.innerHTML='';   // clear preview of content 
+            
+            const endpointURl = '/generate-blog';
+
+            try{
+              const response = await fetch(endpointURl , {
+                method:'POST',
+                headers :{
+                  'content-type':'application/json',
+
+                },
+                body : JSON.stringify({link : youtubeLink})
+              });
+
+
+              const data = await response.json();
+
+
+              blogContent.innerHTML =data.Content;
+
+              loadingIndicater.classList.add('hidden')
+
+
+            }
+            catch(error){
+              console.error("Error occurred :" ,error);
+              alert("something went wrong .please try again .");
+              loadingIndicater.classList.add('hidden');
+            }
+            document.getElementById('loading').style.display = 'none'
+          
+          }
+
+          else{
+            alert("please enter a Youtube link.")
+          }
+
+
+        })
+
+        function showNotification(message, type = "error") {
+    const notification = document.getElementById("notification");
+    const messageBox = document.getElementById("notification-message");
+
+    messageBox.textContent = message;
+    notification.className = `fixed left-1/2 transform -translate-x-1/2 px-6 py-4 text-lg rounded-md shadow-lg transition-all duration-500 flex items-center justify-between w-96 ${
+        type === "error" ? "omebg-amber-750" : "bg-green-500"
+    } text-white`;
+
+    notification.style.top = "20px"; // Slide down effect
+    notification.classList.remove("hidden");
+
+    // Auto-hide after 4 seconds
+    setTimeout(() => {
+        hideNotification();
+    }, 4000);
+}
+
+function hideNotification() {
+    const notification = document.getElementById("notification");
+    notification.style.top = "-100px"; // Slide up effect
+    setTimeout(() => {
+        notification.classList.add("hidden");
+    }, 500);
+}
+
+// Attach event to the button
+document.getElementById('genrateBlogButton').addEventListener("click", async () => {
+    const youtubeLink = document.getElementById('Youtubelink').value;
+    const loadingIndicator = document.getElementById('loading');
+    const blogContent = document.getElementById('blogContent');
+
+    if (youtubeLink) {
+        loadingIndicator.style.display = 'block';
+        blogContent.innerHTML = ''; // Clear preview content
+
+        const endpointURL = '/generate-blog';
+
+        try {
+            const response = await fetch(endpointURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ link: youtubeLink }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch blog content.");
+            }
+
+            const data = await response.json();
+            blogContent.innerHTML = data.Content;
+
+            showNotification("🎉 Blog generated successfully!", "success");
+        } catch (error) {
+            console.error("Error occurred:", error);
+            showNotification(" Something went wrong. Please try again.");
+        } finally {
+            loadingIndicator.style.display = 'none';
+        }
+    } else {
+        showNotification("⚠️ Please enter a YouTube link.");
+    }
+});
+
     </script>
 </body>
 </html>
